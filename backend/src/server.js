@@ -18,7 +18,8 @@ const corsOptions = {
       'http://localhost:3000',
       'http://127.0.0.1:5173',
       'http://127.0.0.1:3000',
-      process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null
+      process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null,
+      'https://ryan-ebon-ten.vercel.app'
     ].filter(Boolean);
     if (allowedOrigins.includes(origin)) {
       callback(null, true);
