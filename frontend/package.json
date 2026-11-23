@@ -1,0 +1,16 @@
+{
+  "name": "lost-found-frontend",
+  "version": "1.0.0",
+  "description": "Front-end - Sistema de Achados e Perdidos",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^5.2.0"
+  },
+  "keywords": ["frontend", "lost-found", "vanilla-js"],
+  "license": "MIT"
+}

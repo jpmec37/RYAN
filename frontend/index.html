@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema de Achados e Perdidos</title>
+  <link rel="stylesheet" href="/assets/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <div class="container">
+        <div class="header-content">
+          <h1 class="logo">
+            <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 6L12 18L4 6"/>
+              <circle cx="12" cy="12" r="4"/>
+            </svg>
+            Achados & Perdidos
+          </h1>
+          <div class="stats-summary" id="statsSummary">
+            <span class="stat"><strong id="statTotal">0</strong> Total</span>
+            <span class="stat available"><strong id="statAvailable">0</strong> Disponíveis</span>
+            <span class="stat returned"><strong id="statReturned">0</strong> Devolvidos</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="main">
+      <div class="container">
+        <section class="card form-section" id="formSection">
+          <div class="section-header">
+            <h2 id="formTitle">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="12" y1="5" x2="12" y2="19"/>
+                <line x1="5" y1="12" x2="19" y2="12"/>
+              </svg>
+              Novo Item
+            </h2>
+            <button type="button" class="btn btn-secondary btn-sm" id="cancelEditBtn" style="display: none;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"/>
+                <line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+              Cancelar
+            </button>
+          </div>
+
+          <form id="itemForm" class="form">
+            <input type="hidden" id="itemId" name="id">
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label for="description">Descrição do Objeto <span class="required">*</span></label>
+                <textarea 
+                  id="description" 
+                  name="description" 
+                  rows="3" 
+                  placeholder="Descreva o objeto encontrado (ex: mochila preta com adesivos, chaveiro de metal...)" 
+                  required
+                ></textarea>
+                <span class="error-message" id="descriptionError"></span>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="category">Categoria <span class="required">*</span></label>
+                <select id="category" name="category" required>
+                  <option value="">Selecione uma categoria</option>
+                  <option value="Eletrônicos">Eletrônicos</option>
+                  <option value="Documentos">Documentos</option>
+                  <option value="Roupas">Roupas</option>
+                  <option value="Acessórios">Acessórios</option>
+                  <option value="Material Escolar">Material Escolar</option>
+                  <option value="Outros">Outros</option>
+                </select>
+                <span class="error-message" id="categoryError"></span>
+              </div>
+              <div class="form-group">
+                <label for="location_found">Local Encontrado <span class="required">*</span></label>
+                <input 
+                  type="text" 
+                  id="location_found" 
+                  name="location_found" 
+                  placeholder="Ex: Biblioteca - 2º andar, Cantina, Estacionamento..." 
+                  required
+                >
+                <span class="error-message" id="locationError"></span>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="status">Situação</label>
+                <select id="status" name="status">
+                  <option value="disponivel">Disponível para retirada</option>
+                  <option value="devolvido">Devolvido ao proprietário</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary" id="submitBtn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+                  <polyline points="17 21 17 13 7 13 7 21"/>
+                  <polyline points="7 3 7 8 15 8"/>
+                </svg>
+                <span id="submitText">Cadastrar Item</span>
+              </button>
+              <button type="reset" class="btn btn-outline" id="resetBtn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="1 4 1 10 7 10"/>
+                  <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>
+                </svg>
+                Limpar
+              </button>
+            </div>
+          </form>
+        </section>
+
+        <section class="card filters-section">
+          <div class="filters-header">
+            <h2>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
+              </svg>
+              Filtros
+            </h2>
+          </div>
+          <div class="filters">
+            <div class="filter-group">
+              <label for="filterSearch">Buscar</label>
+              <div class="input-with-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="11" cy="11" r="8"/>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+                <input 
+                  type="text" 
+                  id="filterSearch" 
+                  placeholder="Buscar por descrição ou local..." 
+                >
+              </div>
+            </div>
+            <div class="filter-group">
+              <label for="filterCategory">Categoria</label>
+              <select id="filterCategory">
+                <option value="">Todas</option>
+                <option value="Eletrônicos">Eletrônicos</option>
+                <option value="Documentos">Documentos</option>
+                <option value="Roupas">Roupas</option>
+                <option value="Acessórios">Acessórios</option>
+                <option value="Material Escolar">Material Escolar</option>
+                <option value="Outros">Outros</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label for="filterStatus">Situação</label>
+              <select id="filterStatus">
+                <option value="">Todas</option>
+                <option value="disponivel">Disponíveis</option>
+                <option value="devolvido">Devolvidos</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label>&nbsp;</label>
+              <button type="button" class="btn btn-outline" id="clearFiltersBtn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="1 4 1 10 7 10"/>
+                  <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>
+                </svg>
+                Limpar Filtros
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <section class="card list-section">
+          <div class="section-header">
+            <h2>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="8" y1="6" x2="21" y2="6"/>
+                <line x1="8" y1="12" x2="21" y2="12"/>
+                <line x1="8" y1="18" x2="21" y2="18"/>
+                <line x1="3" y1="6" x2="3.01" y2="6"/>
+                <line x1="3" y1="12" x2="3.01" y2="12"/>
+                <line x1="3" y1="18" x2="3.01" y2="18"/>
+              </svg>
+              Itens Cadastrados
+            </h2>
+            <span class="items-count" id="itemsCount">0 itens</span>
+          </div>
+
+          <div class="table-container" id="tableContainer">
+            <table class="items-table" id="itemsTable">
+              <thead>
+                <tr>
+                  <th>Descrição</th>
+                  <th>Categoria</th>
+                  <th>Local</th>
+                  <th>Data</th>
+                  <th>Situação</th>
+                  <th class="actions-col">Ações</th>
+                </tr>
+              </thead>
+              <tbody id="itemsTableBody"></tbody>
+            </table>
+            
+            <div class="empty-state" id="emptyState" style="display: none;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M20 6L12 18L4 6"/>
+                <circle cx="12" cy="12" r="4"/>
+              </svg>
+              <h3>Nenhum item encontrado</h3>
+              <p>Cadastre o primeiro item usando o formulário acima</p>
+            </div>
+          </div>
+
+          <div class="pagination" id="pagination" style="display: none;">
+            <button class="btn btn-sm btn-outline" id="prevPage" disabled>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="15 18 9 12 15 6"/>
+              </svg>
+              Anterior
+            </button>
+            <span class="page-info" id="pageInfo">Página 1 de 1</span>
+            <button class="btn btn-sm btn-outline" id="nextPage" disabled>
+              Próxima
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="9 18 15 12 9 6"/>
+              </svg>
+            </button>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>Sistema de Achados e Perdidos</p>
+      </div>
+    </footer>
+  </div>
+
+  <div class="modal-overlay" id="confirmModal" style="display: none;">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="modalTitle">Confirmar Ação</h3>
+        <button class="modal-close" id="modalCloseBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      <p id="modalMessage">Tem certeza que deseja realizar esta ação?</p>
+      <div class="modal-actions">
+        <button class="btn btn-outline" id="modalCancelBtn">Cancelar</button>
+        <button class="btn btn-danger" id="modalConfirmBtn">Confirmar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script type="module" src="/assets/app.js"></script>
+</body>
+</html>
