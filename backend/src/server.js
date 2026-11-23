@@ -12,19 +12,17 @@ const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
 const corsOptions = {
   origin: (origin, callback) => {
     if (!origin) return callback(null, true);
-    
     const allowedOrigins = [
       FRONTEND_URL,
       'http://localhost:5173',
       'http://localhost:3000',
       'http://127.0.0.1:5173',
-      'http://127.0.0.1:3000'
-    ];
-    
+      'http://127.0.0.1:3000',
+      process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null
+    ].filter(Boolean);
     if (allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      console.warn(`CORS blocked origin: ${origin}`);
       callback(new Error('Not allowed by CORS'));
     }
   },
@@ -37,7 +35,7 @@ app.use(cors(corsOptions));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
-if (process.env.NODE_ENV !== 'production') {
+if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
   app.use((req, res, next) => {
     const start = Date.now();
     res.on('finish', () => {
@@ -57,14 +55,16 @@ app.get('/health', (req, res) => {
 });
 
 app.use('/api/items', itemsRoutes);
-
 app.use(notFoundHandler);
 app.use(errorHandler);
 
-app.listen(PORT, () => {
-  console.log(`API rodando em http://localhost:${PORT}`);
-  console.log(`Health check: http://localhost:${PORT}/health`);
-  console.log(`Frontend: ${FRONTEND_URL}`);
-});
+// Vercel serverless: export app, don't listen
+if (process.env.VERCEL) {
+  export default app;
+} else {
+  app.listen(PORT, () => {
+    console.log(`API rodando em http://localhost:${PORT}`);
+  });
+}
 
 export default app;

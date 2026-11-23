@@ -185,23 +185,56 @@ cd backend
 npm start
 ```
 
-## Deploy
+## Deploy no Vercel (GitHub)
 
-### Backend (Railway, Render, Fly.io, Docker)
+### 1. Suba para o GitHub
 ```bash
-cd backend
-npm install
-npm start
+git init
+git add .
+git commit -m "initial commit"
+git remote add origin https://github.com/seu-usuario/seu-repo.git
+git push -u origin main
 ```
-Configure variaveis de ambiente no painel do servico.
 
-### Frontend (Vercel, Netlify, GitHub Pages)
-```bash
-cd frontend
-npm run build
-# Deploy pasta dist/
+### 2. Importe no Vercel
+1. Acesse [vercel.com](https://vercel.com) e clique em **Import Project**
+2. Selecione seu repositorio do GitHub
+3. O Vercel detecta automaticamente o `vercel.json`
+
+### 3. Configure as Environment Variables
+No painel do Vercel, va em **Settings -> Environment Variables** e adicione:
+
+| Variavel | Valor |
+|----------|-------|
+| `SUPABASE_URL` | `https://seu-projeto.supabase.co` |
+| `SUPABASE_KEY` | `sua_service_role_key_aqui` |
+| `FRONTEND_URL` | `https://seu-projeto.vercel.app` |
+
+### 4. Deploy
+Clique em **Deploy**. O Vercel vai:
+- Buildar o frontend (Vite) em `frontend/dist`
+- Deployar o backend como serverless function em `/api`
+- Servir tudo em `https://seu-projeto.vercel.app`
+
+### Variaveis de ambiente no Vercel
 ```
-Configure proxy reverso para `/api` apontar para a URL do backend.
+SUPABASE_URL=https://seu-projeto.supabase.co
+SUPABASE_KEY=sua_service_role_key_aqui
+FRONTEND_URL=https://seu-projeto.vercel.app
+NODE_ENV=production
+```
+
+### Estrutura para Vercel
+```
+/
+├── api/
+│   └── index.js          # Serverless function (Express)
+├── backend/
+│   └── src/              # Codigo do backend
+├── frontend/             # Codigo do frontend
+├── vercel.json           # Configuracao Vercel
+└── README.md
+```
 
 ## Tecnologias
 
