@@ -59,9 +59,7 @@ app.use(notFoundHandler);
 app.use(errorHandler);
 
 // Vercel serverless: export app, don't listen
-if (process.env.VERCEL) {
-  export default app;
-} else {
+if (!process.env.VERCEL) {
   app.listen(PORT, () => {
     console.log(`API rodando em http://localhost:${PORT}`);
   });
